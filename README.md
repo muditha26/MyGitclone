@@ -1,2 +1,2 @@
-# product_information_management
-Repositorio que alberga al modulo product_information_management
+# information-workflow
+Stores Information management modules for Odoo, such as PIM (Product Information Management)
