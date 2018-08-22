@@ -1,102 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+  <data>
 
-      <!-- Menu for PIM Category-->
-      <record id="pim_category_action" model="ir.actions.act_window">
-        <field name="name">PIM Category</field>
-        <field name="res_model">pim.category</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-      </record>
+    <!-- Menu for PIM Category-->
+    <record id="pim_category_action" model="ir.actions.act_window">
+      <field name="name">PIM Category</field>
+      <field name="res_model">pim.category</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
 
-      <!-- Menu for PIM Attribute-->
-      <record id="pim_attribute_action" model="ir.actions.act_window">
-        <field name="name">PIM Attribute</field>
-        <field name="res_model">pim.attribute</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-      </record>
+    <!-- Menu for PIM Attribute-->
+    <record id="pim_attribute_action" model="ir.actions.act_window">
+      <field name="name">PIM Attribute</field>
+      <field name="res_model">pim.attribute</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem groups="pim_base.group_pim_user"
+              id="menu_product_information_management" name="PIM"
+              parent="stock.menu_stock_config_settings" sequence="4"/>
 
-      <menuitem
-      id="menu_product_information_management" name="PIM"
-      parent="stock.menu_stock_config_settings" sequence="4"/>
+    <menuitem
+            action="pim_category_action" id="menu_product_pim_category"
+            parent="menu_product_information_management" sequence="1"/>
 
-      <menuitem
-      action="pim_category_action" id="menu_product_pim_category"
-      parent="menu_product_information_management" sequence="1"/>
+    <menuitem
+            action="pim_attribute_action" id="menu_product_pim_attribute"
+            parent="menu_product_information_management" sequence="2"/>
 
-      <menuitem
-      action="pim_attribute_action" id="menu_product_pim_attribute"
-      parent="menu_product_information_management" sequence="2"/>
+    <!-- From PIM Category -->
+    <record model="ir.ui.view" id="pim_category_form">
+      <field name="name">pim.category.form</field>
+      <field name="model">pim.category</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="PIM Category"  version="7.0">
+          <sheet>
+            <group string="Category">
+              <field name="name" string="Name"/>
+              <field name="pim_attributes_id" string="Attributes"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
 
-      <!-- From PIM Category -->
-      <record model="ir.ui.view" id="pim_category_form">
-        <field name="name">pim.category.form</field>
-        <field name="model">pim.category</field>
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-          <form string="PIM Category"  version="7.0">
-            <sheet>
-                <group string="Category">
-                  <field name="name" string="Name"/>
-                  <field name="pim_attributes_id" string="Attributes" widget="many2many_list"/>
-                </group>
-           </sheet>
-          </form>
-        </field>
-      </record>
+    <!-- Tree PIM Category -->
+    <record model="ir.ui.view" id="pim_category_tree">
+      <field name="name">pim.category.tree</field>
+      <field name="model">pim.category</field>
+      <field name="type">tree</field>
 
-      <!-- Tree PIM Category -->
-      <record model="ir.ui.view" id="pim_category_tree">
-        <field name="name">pim.category.tree</field>
-        <field name="model">pim.category</field>
-        <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="PIM Category">
+          <field name="name" string="Category" />
+          <field name="pim_attributes_id" string="Attributes" />
+        </tree>
+      </field>
+    </record>
 
-        <field name="arch" type="xml">
-          <tree string="PIM Category">
-              <field name="name" string="Category" />
-              <field name="pim_attributes_id" string="Attributes" />
-          </tree>
-        </field>
-      </record>
-
-       <!-- From PIM Attribute -->
-      <record model="ir.ui.view" id="pim_attribute_form">
-        <field name="name">pim.attribute.form</field>
-        <field name="model">pim.attribute</field>
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-          <form string="PIM Attribute"  version="7.0">
-            <sheet>
-                <group string="Attribute">
-                  <field name="name" string="Name"/>
-                  <field name="pim_attribute_type" string="Type"/>
-                  <field name="pim_attribute_options_id" string="Options" widget="one2many_list"  context="{'show_attribute': False}" attrs="{'invisible' : [('pim_attribute_type', 'in', ('text','number'))] }" >
-                      <tree string="Variants" editable="bottom">
-                        <field name="value"/>
-                        <field name="pim_attribute_id" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" context="{'default_pim_attribute_id': pim_attribute_id}" invisible="1"/>
-                      </tree>
-                  </field>
-                </group>
-           </sheet>
-          </form>
-        </field>
-      </record>
-
-      <!-- Tree PIM Attribute -->
-      <record model="ir.ui.view" id="pim_attribute_tree">
-        <field name="name">pim.attribute.tree</field>
-        <field name="model">pim.attribute</field>
-        <field name="type">tree</field>
-
-        <field name="arch" type="xml">
-          <tree string="PIM attribute">
-              <field name="name" string="Name" />
+    <!-- From PIM Attribute -->
+    <record model="ir.ui.view" id="pim_attribute_form">
+      <field name="name">pim.attribute.form</field>
+      <field name="model">pim.attribute</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="PIM Attribute"  version="7.0">
+          <sheet>
+            <group string="Attribute">
+              <field name="name" string="Name"/>
               <field name="pim_attribute_type" string="Type"/>
-              <field name="pim_attribute_options_id" string="Options"/>
-          </tree>
-        </field>
-      </record>
-    </data>
-  </odoo>
+              <field name="pim_attribute_options_id" string="Options" widget="one2many_list"  context="{'show_attribute': False}" attrs="{'invisible' : [('pim_attribute_type', 'in', ('text','number'))] }" >
+                <tree string="Variants" editable="bottom">
+                  <field name="name"/>
+                  <field name="pim_attribute_id" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" context="{'default_pim_attribute_id': pim_attribute_id}" invisible="1"/>
+                </tree>
+              </field>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Tree PIM Attribute -->
+    <record model="ir.ui.view" id="pim_attribute_tree">
+      <field name="name">pim.attribute.tree</field>
+      <field name="model">pim.attribute</field>
+      <field name="type">tree</field>
+
+      <field name="arch" type="xml">
+        <tree string="PIM attribute">
+          <field name="name" string="Name" />
+          <field name="pim_attribute_type" string="Type"/>
+          <field name="pim_attribute_options_id" string="Options"/>
+        </tree>
+      </field>
+    </record>
+    <!-- From PIM Attribute with value -->
+    <record model="ir.ui.view" id="pim_attributewith_value_form">
+      <field name="name">pim.attribute.with.value.form</field>
+      <field name="model">pim.attribute.with.value</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="PIM Attribute with value"  version="7.0">
+          <sheet>
+            <group string="Attribute with value">
+              <field name="exported" invisible="1"/>
+              <field name="name" string="Name" readonly="1"/>
+              <field name="pim_attribute_id" invisible="1"/>
+              <field name="pim_attribute_type" string="Type" readonly="1"/>
+              <field name="pim_attribute_id" invisible="1"/>
+              <field name="value_text" string="Value" attrs="{'invisible': [('pim_attribute_type', '!=', 'text')],'readonly':[('exported', '!=', False)]}"/>
+              <field name="value_numeric" string="Value" attrs="{'invisible': [('pim_attribute_type', '!=', 'number')], 'readonly':[('exported', '!=', False)]}"/>
+              <field name="value_select" string="Value" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" attrs="{'invisible': [('pim_attribute_type', '!=', 'select')],'readonly':[('exported', '!=', False)]}" widget="selection"/>
+              <field name="value_radio" string="Value" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" attrs="{'invisible': [('pim_attribute_type', '!=', 'radio')],'readonly':[('exported', '!=', False)]}" widget="radio"/>
+              <field name="value_checkbox" string="Value" widget="many2many_tags" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" attrs="{'invisible': [('pim_attribute_type', '!=', 'checkbox')],'readonly':[('exported', '!=', False)]}"/>
+              <field name="export_variant" string="Conver to Odoo Variant" attrs="{'readonly':[('exported', '!=', False)]}"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>
