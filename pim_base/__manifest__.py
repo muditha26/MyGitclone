@@ -15,7 +15,7 @@ the attributes are made up of a value and type (text, number, radio, select, che
     'data': [
         'views/pim.xml',
         'views/product_template_pim_views.xml',
-        'security/pim_security.xml',
+        #'security/pim_security.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,

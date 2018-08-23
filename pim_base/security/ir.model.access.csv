@@ -1,9 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_pim_category,pim.category.group,model_pim_category,pim_base.group_pim_user,1,1,1,1
-access_pim_attribute,pim.attribute.group,model_pim_attribute,pim_base.group_pim_user,1,1,1,1
-access_pim_attribute_value,pim.attribute_value.group,model_pim_attribute_with_value,pim_base.group_pim_user,1,1,1,1
-access_pim_options,pim.options.group,model_pim_options,pim_base.group_pim_user,1,1,1,1
-access_pim_category_view,pim.category.group,model_pim_category,base.group_user,1,0,0,0
-access_pim_attribute_view,pim.attribute.group,model_pim_attribute,base.group_user,1,0,0,0
-access_pim_attribute_value_view,pim.attribute_value.group,model_pim_attribute_with_value,base.group_user,1,0,0,0
-access_pim_options_view,pim.options.group,model_pim_options,base.group_user,1,0,0,0
+access_pim_category,pim.category.group,model_pim_category,stock.group_stock_manager,1,1,1,1
+access_pim_attribute,pim.attribute.group,model_pim_attribute,stock.group_stock_manager,1,1,1,1
+access_pim_attribute_value,pim.attribute_value.group,model_pim_attribute_with_value,stock.group_stock_manager,1,1,1,1
+access_pim_options,pim.options.group,model_pim_options,stock.group_stock_manager,1,1,1,1
+access_pim_category_view,pim.category.group,model_pim_category,stock.group_stock_user,1,0,0,0
+access_pim_attribute_view,pim.attribute.group,model_pim_attribute,stock.group_stock_user,1,0,0,0
+access_pim_attribute_value_view,pim.attribute_value.group,model_pim_attribute_with_value,stock.group_stock_user,1,0,0,0
+access_pim_options_view,pim.options.group,model_pim_options,stock.group_stock_user,1,0,0,0

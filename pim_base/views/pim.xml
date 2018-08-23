@@ -17,7 +17,7 @@
       <field name="view_type">form</field>
       <field name="view_mode">tree,form</field>
     </record>
-    <menuitem groups="pim_base.group_pim_user"
+    <menuitem groups="stock.group_stock_user"
               id="menu_product_information_management" name="PIM"
               parent="stock.menu_stock_config_settings" sequence="4"/>
 

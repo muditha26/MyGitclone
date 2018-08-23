@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
 
             <xpath expr="//page[@name='general_information']" position="after">
-                <page name="pim" string="PIM" groups="pim_base.group_pim_user">
+                <page name="pim" string="PIM" groups="stock.group_stock_user">
                     <group>
                         <field name="pim_category_id" string="Category" options="{'no_create_edit': True}" />
                         <field name="pim_attributes_with_value" string="Attributes">
