@@ -17,7 +17,7 @@ class ProductTemplate(models.Model):
     _name = "product.template"
     _inherit = "product.template"
 
-    pim_category_id = fields.Many2one('pim.category', 'Pim Category', ondelete='restrict')
+    pim_category_id = fields.Many2many('pim.category', string='Pim Category', ondelete='restrict')
     pim_attributes_with_value = fields.One2many('pim.attribute.with.value', 'product_id',
                                                 string='PIM Attribute with value',
                                                 ondelete='set null', domain=[('exported', '!=', True)])
@@ -25,56 +25,60 @@ class ProductTemplate(models.Model):
     @api.onchange('pim_category_id')
     def _change_category(self):
         attrs_values = []
-        cat_id = self.env['pim.category'].search([['id', '=', self.pim_category_id.id]])
-        # product = self.env['product.template'].browse([self._origin.id])
-        # pim_attributes_with_value = self.env['pim.attribute.with.value'].search(['product_id.id','=',self._origin.id])
-        pim_attributes_with_value = self.pim_attributes_with_value
-        if cat_id.pim_attributes_id:
-            for attribute in cat_id.pim_attributes_id:
-                existing_attribute = False
-                for attribute_value in pim_attributes_with_value:
-                    if cat_id.id != attribute_value.pim_category_id.id:
-                        break
-                    if attribute_value.pim_attribute_id.id == attribute.id:
+        for category in self.pim_category_id:
+            cat_id = self.env['pim.category'].search([['id', '=', category.id]])
+            # product = self.env['product.template'].browse([self._origin.id])
+            # pim_attributes_with_value = self.env['pim.attribute.with.value'].search(['product_id.id','=',self._origin.id])
+            pim_attributes_with_value = self.pim_attributes_with_value
+            if cat_id.pim_attributes_id:
+                for attribute in cat_id.pim_attributes_id:
+                    existing_attribute = False
+                    for attribute_value in pim_attributes_with_value:
+                        if cat_id.id != attribute_value.pim_category_id.id:
+                            break
+                        if attribute_value.pim_attribute_id.id == attribute.id:
+                            vals = {
+                                'name': attribute.name,
+                                'pim_attribute_id': attribute.id,
+                                'pim_category_id': cat_id.id,
+                                'export_variant': attribute_value.export_variant,
+                                'exported': attribute_value.exported,
+                            }
+                            if attribute_value.pim_attribute_id.pim_attribute_type == 'text':
+                                vals.update({'value_text': attribute_value.value_text})
+                            elif attribute_value.pim_attribute_id.pim_attribute_type == 'number':
+                                vals.update({
+                                    'value_numeric': attribute_value.value_numeric,
+                                })
+                            elif attribute_value.pim_attribute_id.pim_attribute_type == 'radio':
+                                vals.update({
+
+                                    'value_radio': attribute_value.value_radio.id,
+                                })
+                            elif attribute_value.pim_attribute_id.pim_attribute_type == 'select':
+                                vals.update({
+                                    'value_select': attribute_value.value_select.id,
+                                })
+                            elif attribute_value.pim_attribute_id.pim_attribute_type == 'checkbox':
+                                value_checked = []
+                                for checked in attribute_value.value_checkbox:
+                                    value_checked.append((4, checked.id))
+                                vals.update({'value_checkbox': value_checked})
+                            attrs_values.append(self.env['pim.attribute.with.value'].create(vals).id)
+                            existing_attribute = True
+                            break
+                    if not existing_attribute:
                         vals = {
                             'name': attribute.name,
                             'pim_attribute_id': attribute.id,
                             'pim_category_id': cat_id.id,
-                            'export_variant': attribute_value.export_variant,
-                            'exported': attribute_value.exported,
                         }
-                        if attribute_value.pim_attribute_id.pim_attribute_type == 'text':
-                            vals.update({'value_text': attribute_value.value_text})
-                        elif attribute_value.pim_attribute_id.pim_attribute_type == 'number':
-                            vals.update({
-                                'value_numeric': attribute_value.value_numeric,
-                            })
-                        elif attribute_value.pim_attribute_id.pim_attribute_type == 'radio':
-                            vals.update({
-                                'value_radio': attribute_value.value_radio.id,
-                            })
-                        elif attribute_value.pim_attribute_id.pim_attribute_type == 'select':
-                            vals.update({
-                                'value_select': attribute_value.value_select.id,
-                            })
-                        elif attribute_value.pim_attribute_id.pim_attribute_type == 'checkbox':
-                            value_checked = []
-                            for checked in attribute_value.value_checkbox:
-                                value_checked.append((4, checked.id))
-                            vals.update({'value_checkbox': value_checked})
                         attrs_values.append(self.env['pim.attribute.with.value'].create(vals).id)
-                        existing_attribute = True
-                        break
-                if not existing_attribute:
-                    vals = {
-                        'name': attribute.name,
-                        'pim_attribute_id': attribute.id,
-                        'pim_category_id': cat_id.id,
-                    }
-                    attrs_values.append(self.env['pim.attribute.with.value'].create(vals).id)
-            self.pim_attributes_with_value = attrs_values
-        else:
-            self.pim_attributes_with_value = []
+                attrs_values += attrs_values
+            else:
+                attrs_values += []
+        self.pim_attributes_with_value = attrs_values
+
 
     @api.multi
     def export_pim_attribute(self):
@@ -204,6 +208,36 @@ class PIMAttributeWithValue(models.Model):
                     if record.show_value != "": record.show_value += ' |'
                 else:
                     record.show_value = show
+
+    @api.multi
+    def call_edit_view(self):
+        res = {
+            'name': 'Attribute Value',
+            'view_type': 'tree,form',
+            'view_mode': 'form',
+            'view_id': self.env.ref('pim_base.pim_attributewith_value_form').id,
+            'res_model': 'pim.attribute.with.value',
+            'res_id': self.id,
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'nodestroy': True,
+            'flags': {'action_buttons': True,
+                      'tag': 'reload'}
+        }
+        return res
+
+    @api.multi
+    def write(self, vals):
+        value = super(PIMAttributeWithValue, self).write(vals)
+        if not 'show_value' in vals:
+            self._compute_show_value()
+        return value
+
+    @api.multi
+    def post_write(self, vals):
+        self.write(vals)
+        self._compute_show_value()
+        return {}
 
 
 class Options(models.Model):

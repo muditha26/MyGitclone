@@ -11,15 +11,16 @@
             <xpath expr="//page[@name='general_information']" position="after">
                 <page name="pim" string="PIM" groups="stock.group_stock_user">
                     <group>
-                        <field name="pim_category_id" string="Category" options="{'no_create_edit': True}" />
+                        <field name="pim_category_id" string="Category" widget="many2many_tags" options="{'no_create_edit': True}" />
                         <field name="pim_attributes_with_value" string="Attributes">
                             <!--editable="botoom"-->
-                            <tree create="0" delete="0">
+                            <tree create="0" delete="0" editable="top">
                                 <field name="exported" invisible="1"/>
                                 <field name="name" string="Name" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
                                 <field name="pim_attribute_type" string="Type" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
                                 <field name="show_value" string="Value" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
                                 <field name="export_variant" string="Convert to Odoo Variant" attrs="{'invisible':[('exported', '!=', False)]}"/>
+                                <button string="Edit" type="object" name="call_edit_view" class="btn btn-default btn-sm"/>
                             </tree>
                         </field>
                     </group>
