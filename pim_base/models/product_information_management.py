@@ -27,8 +27,6 @@ class ProductTemplate(models.Model):
         attrs_values = []
         for category in self.pim_category_id:
             cat_id = self.env['pim.category'].search([['id', '=', category.id]])
-            # product = self.env['product.template'].browse([self._origin.id])
-            # pim_attributes_with_value = self.env['pim.attribute.with.value'].search(['product_id.id','=',self._origin.id])
             pim_attributes_with_value = self.pim_attributes_with_value
             if cat_id.pim_attributes_id:
                 for attribute in cat_id.pim_attributes_id:
@@ -197,7 +195,7 @@ class PIMAttributeWithValue(models.Model):
     @api.depends('pim_attribute_type')
     def _compute_show_value(self):
         for record in self:
-            if record.exported == False:
+            if record.exported is False:
                 show = getattr(record, SHOW_VALUE_CASES[record.pim_attribute_type])
                 if record.pim_attribute_type in ['select', 'radio']:
                     record.show_value = show.display_name
@@ -227,16 +225,8 @@ class PIMAttributeWithValue(models.Model):
         return res
 
     @api.multi
-    def write(self, vals):
-        value = super(PIMAttributeWithValue, self).write(vals)
-        if not 'show_value' in vals:
-            self._compute_show_value()
-        return value
-
-    @api.multi
     def post_write(self, vals):
         self.write(vals)
-        self._compute_show_value()
         return {}
 
 
