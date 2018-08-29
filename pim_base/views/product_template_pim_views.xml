@@ -20,7 +20,7 @@
                                 <field name="pim_attribute_type" string="Type" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
                                 <field name="show_value" string="Value" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
                                 <field groups="product.group_product_variant" name="export_variant" string="Convert to Odoo Variant" attrs="{'invisible':[('exported', '!=', False)]}"/>
-                                <button string="Edit" type="object" name="call_edit_view" class="btn btn-default btn-sm" groups="product.group_product_variant"/>
+                                <button string="Edit" type="object" name="call_edit_view" class="btn btn-default btn-sm"/>
                             </tree>
                         </field>
                     </group>

@@ -117,7 +117,7 @@
               <field name="value_radio" string="Value" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" attrs="{'invisible': [('pim_attribute_type', '!=', 'radio')],'readonly':[('exported', '!=', False)]}" widget="radio"/>
               <field name="value_checkbox" string="Value" widget="many2many_tags" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" attrs="{'invisible': [('pim_attribute_type', '!=', 'checkbox')],'readonly':[('exported', '!=', False)]}"/>
               <field name="export_variant" invisiblestring="Conver to Odoo Variant" invisible="1"/>
-              <footer groups="product.group_product_variant">
+              <footer>
                 <button string="Save and Close" name="post_write" type="object" class="btn btn-primary btn-sm o_form_button_save"/>
               </footer>
             </group>
