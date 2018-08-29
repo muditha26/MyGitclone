@@ -19,13 +19,13 @@
                                 <field name="name" string="Name" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
                                 <field name="pim_attribute_type" string="Type" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
                                 <field name="show_value" string="Value" readonly="1" attrs="{'invisible':[('exported', '!=', False)]}"/>
-                                <field name="export_variant" string="Convert to Odoo Variant" attrs="{'invisible':[('exported', '!=', False)]}"/>
-                                <button string="Edit" type="object" name="call_edit_view" class="btn btn-default btn-sm"/>
+                                <field groups="product.group_product_variant" name="export_variant" string="Convert to Odoo Variant" attrs="{'invisible':[('exported', '!=', False)]}"/>
+                                <button string="Edit" type="object" name="call_edit_view" class="btn btn-default btn-sm" groups="product.group_product_variant"/>
                             </tree>
                         </field>
                     </group>
                     <group>
-                        <button string="Export to variants" type="object" name="export_pim_attribute" class="oe_highlight oe_right"/>
+                        <button string="Export to variants" type="object" name="export_pim_attribute" class="oe_highlight oe_right" groups="product.group_product_variant"/>
                     </group>
                 </page>
             </xpath>

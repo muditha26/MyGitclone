@@ -82,34 +82,160 @@ class ProductTemplate(models.Model):
     def export_pim_attribute(self):
         for attribute_value in self.pim_attributes_with_value:
             if attribute_value.export_variant == True and attribute_value.exported != True:
-                # Se crea el atributo
-                attribute = self.create_attribute({'name': attribute_value.pim_attribute_id.name})
-                if attribute_value.pim_attribute_id.pim_attribute_type == 'text':
-                    self.env['product.attribute.line'].create(
-                        {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
-                         'product_tml_id': attribute_value.product_id.id,
-                         'value_ids': [(0, 0, {'name': attribute_value.value_text, 'attribute_id': attribute.id,
-                                               'product_ids': [
-                                                   (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})]})
-                elif attribute_value.pim_attribute_id.pim_attribute_type == 'number':
-                    self.env['product.attribute.line'].create(
-                        {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
-                         'product_tml_id': attribute_value.product_id.id,
-                         'value_ids': [(0, 0, {'name': str(attribute_value.value_numeric), 'attribute_id': attribute.id,
-                                               'product_ids': [
-                                                   (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})]})
+                # Se busca el atributo
+                new_attribute = False
+                attribute = self.env['product.attribute'].search([('name','=', attribute_value.pim_attribute_id.name)])
+                if not attribute:
+                    # Se crea el atributo
+                    attribute = self.create_attribute({'name': attribute_value.pim_attribute_id.name})
+                    new_attribute = True
                 else:
-                    value_ids = []
-                    for option in attribute_value.pim_attribute_id.pim_attribute_options_id:
-                        value_ids.append((0, 0, {'name': str(option.name), 'attribute_id': attribute.id,
-                                                 'product_ids': [
-                                                     (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]}))
-                    # Se crea el objeto attribute_line y a traves de la misma los attribute_value por cada opcion tambien se crean todas las relaciones many2many con la estrucura de odoo [(0,0 lis_atriburtos_clase)]
-                    self.env['product.attribute.line'].create(
-                        {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
-                         'product_tml_id': attribute_value.product_id.id,
-                         'value_ids': value_ids})
-                attribute_value.write({'exported': True})
+                    attribute = attribute[0]
+                #si es un atributo nuevo
+                if new_attribute:
+                    if attribute_value.pim_attribute_id.pim_attribute_type == 'text':
+                        self.env['product.attribute.line'].create(
+                            {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
+                             'product_tml_id': attribute_value.product_id.id,
+                             'value_ids': [(0, 0, {'name': attribute_value.value_text, 'attribute_id': attribute.id,
+                                                   'product_ids': [
+                                                       (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})]})
+                    elif attribute_value.pim_attribute_id.pim_attribute_type == 'number':
+                        self.env['product.attribute.line'].create(
+                            {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
+                             'product_tml_id': attribute_value.product_id.id,
+                             'value_ids': [(0, 0, {'name': str(attribute_value.value_numeric), 'attribute_id': attribute.id,
+                                                   'product_ids': [
+                                                       (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})]})
+                    else:
+                        value_ids = []
+                        for option in attribute_value.pim_attribute_id.pim_attribute_options_id:
+                            value_ids.append((0, 0, {'name': str(option.name), 'attribute_id': attribute.id,
+                                                     'product_ids': [
+                                                         (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]}))
+                        # Se crea el objeto attribute_line y a traves de la misma los attribute_value por cada opcion tambien se crean todas las relaciones many2many con la estrucura de odoo [(0,0 lis_atriburtos_clase)]
+                        self.env['product.attribute.line'].create(
+                            {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
+                             'product_tml_id': attribute_value.product_id.id,
+                             'value_ids': value_ids})
+                    attribute_value.write({'exported': True})
+                # si no es un atributo nuevo
+                else:
+                    # controlamos si ya existe la linea
+                    exists_linea = False
+                    for attribute_line in attribute.attribute_line_ids:
+                        if attribute_line.product_tmpl_id.id == attribute_value.product_id.id:
+                            exists_linea = True
+                            break
+                    if attribute_value.pim_attribute_id.pim_attribute_type == 'text' :
+                        # controlar si ya existe el valor dentro del attributo
+                        exists_attribute_value = False
+                        for value in attribute.value_ids:
+                            if value.name == attribute_value.value_text:
+                                exists_attribute_value = True
+                                break
+                        #si existe la linea de attributo solo hay que modificar los valores para la linea de attributos
+                        if exists_linea:
+                            # si el valor del atributo ya existe, hay que referenciar la linea de atributo al mismo
+                            if exists_attribute_value:
+                                attribute_line.value_ids += value
+                            # si no existe hay que crear el valor
+                            else:
+                                attribute_line.value_ids += self.env['product.attribute.value'].create(
+                                    {'name': attribute_value.value_text, 'attribute_id': attribute.id,
+                                     'product_ids': [(0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})
+                        # si no exite la line a attributo hay que crear y agregar a las lineas del attribute
+                        else:
+                            # si el valor del atributo ya existe, hay que referenciar la linea de atributo al mismo
+                            if exists_attribute_value:
+                                # se crea la linea de atributo
+                                attribute_line = self.env['product.attribute.line'].create({'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id})
+                                # crear las variantes de producto
+                                value.product_ids += self.env['product.product'].create({'product_tmpl_id': attribute_value.product_id.id, })
+                                #instanciamoes el valor a la linea de atributo
+                                attribute_line.value_ids += value
+                            # si no existe hay que crear el valor
+                            else:
+                                attribute.attribute_line_ids += self.env['product.attribute.line'].create(
+                                    {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
+                                     'value_ids': [(0, 0, {'name': attribute_value.value_text, 'attribute_id': attribute.id,
+                                                   'product_ids': [
+                                                       (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})]})
+                    elif attribute_value.pim_attribute_id.pim_attribute_type == 'number':
+                        # controlar si ya existe el valor dentro del attributo
+                        exists_attribute_value = False
+                        for value in attribute.value_ids:
+                            if value.name == str(attribute_value.value_numeric):
+                                exists_attribute_value = True
+                                break
+                        #si existe la linea de attributo solo hay que modificar los valores para la linea de attributos
+                        if exists_linea:
+                            # si el valor del atributo ya existe, hay que referenciar la linea de atributo al mismo
+                            if exists_attribute_value:
+                                attribute_line.value_ids += value
+                            # si no existe hay que crear el valor
+                            else:
+                                attribute_line.value_ids += self.env['product.attribute.value'].create(
+                                    {'name': str(attribute_value.value_numeric), 'attribute_id': attribute.id,
+                                     'product_ids': [(0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})
+                        # si no exite la line a attributo hay que crear y agregar a las lineas del attribute
+                        else:
+                            # si el valor del atributo ya existe, hay que referenciar la linea de atributo al mismo
+                            if exists_attribute_value:
+                                # se crea la linea de atributo
+                                attribute_line = self.env['product.attribute.line'].create({'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id})
+                                # crear las variantes de producto
+                                value.product_ids += self.env['product.product'].create({'product_tmpl_id': attribute_value.product_id.id, })
+                                #instanciamoes el valor a la linea de atributo
+                                attribute_line.value_ids += value
+                            # si no existe hay que crear el valor
+                            else:
+                                attribute.attribute_line_ids += self.env['product.attribute.line'].create(
+                                    {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id,
+                                     'value_ids': [(0, 0, {'name': str(attribute_value.value_numeric), 'attribute_id': attribute.id,
+                                                   'product_ids': [
+                                                       (0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})]})
+                    else:
+                        #controlar que valores ya existen en el atributo y cuales no
+                        exists_values = []
+                        new_values = []
+                        for option in attribute_value.pim_attribute_id.pim_attribute_options_id:
+                            aux_exists = False
+                            for value in attribute.value_ids:
+                                if value.name == option.name:
+                                    exists_values.append(value)
+                                    aux_exists = True
+                                    break
+                            if not aux_exists:
+                                new_values.append(option.name)
+                        # si existe la linea de attributo solo hay que modificar los valores para la linea de attributos
+                        if exists_linea:
+                            #por cada valor existente solo hay que agregarlo al attributo
+                            for value in exists_values:
+                                attribute_line.value_ids += value
+                            #por cada valor nuevo hay que crear un valor de atributo y agregarlo al atributo
+                            for value in new_values:
+                                attribute_line.value_ids += self.env['product.attribute.value'].create(
+                                    {'name': str(value), 'attribute_id': attribute.id,
+                                     'product_ids': [(0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})
+
+                        # si no exite la line a attributo hay que crear y agregar a las lineas del attribute
+                        else:
+                            # se crea la linea de atributo
+                            attribute_line = self.env['product.attribute.line'].create(
+                                {'product_tmpl_id': attribute_value.product_id.id, 'attribute_id': attribute.id})
+                            # por cada valor existente solo hay que agregarlo al attributo
+                            for value in exists_values:
+                                # crear las variantes de producto
+                                value.product_ids += self.env['product.product'].create(
+                                    {'product_tmpl_id': attribute_value.product_id.id, })
+                                attribute_line.value_ids += value
+                            # por cada valor nuevo hay que crear un valor de atributo y agregarlo al atributo
+                            for value in new_values:
+                                attribute_line.value_ids += self.env['product.attribute.value'].create(
+                                    {'name': str(value), 'attribute_id': attribute.id,
+                                     'product_ids': [(0, 0, {'product_tmpl_id': attribute_value.product_id.id, })]})
+                    attribute_value.write({'exported': True})
 
     def create_attribute(self, vals):
         return self.env['product.attribute'].create(vals)
