@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="maintance_extends" model="ir.ui.view">
+            <field name="name">hr.equipment.view.form</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+			<field name="arch" type="xml">
+		        <xpath expr="//sheet/notebook/page" position="after">
+		            <page name="myone" string="EMI">
+                        <!--<group>-->
+                            <!--<field name="name_att" string="Attributes"></field>-->
+                        <!--</group>-->
+
+                         <field name="name_att" string="Attributes">
+                            <!--editable="botoom"-->
+                            <tree>
+                                <field name="name" string="Name" />
+                                <field name="eim_attribute_type" string="Type" />
+                                <!--<field name="show_value" string="Value" />-->
+                                <button string="Edit" type="object" name="call_edit_view" class="btn btn-default btn-sm"/>
+                            </tree>
+                        </field>
+                    </page>
+
+		        </xpath>
+			</field>
+        </record>
+
+
+
+         <!--<record id="emi_base" model="ir.ui.view">-->
+            <!--<field name="name">emi.base</field>-->
+            <!--<field name="model">maintenance.stage</field>-->
+            <!--<field name="inherit_id" ref="eim_base.maintenance_stage_extend"/>-->
+			<!--<field name="arch" type="xml">-->
+		         <!--<xpath expr="//field[@name='name']" position="after">-->
+               <!--<field name="name_abc" string="Attributes"/>-->
+          <!--</xpath>-->
+			<!--</field>-->
+        <!--</record>-->
+
+    </data>
+</odoo>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+
+		<!--<record id="pim_category_action" model="ir.actions.act_window">-->
+		<!--<field name="name">PIM Category</field>-->
+		<!--<field name="res_model">pim.category</field>-->
+		<!--<field name="view_type">form</field>-->
+		<!--<field name="view_mode">tree,form</field>-->
+		<!--</record>-->
+
+		<!--&lt;!&ndash; Menu for PIM Attribute&ndash;&gt;-->
+		<!--<record id="pim_attribute_action" model="ir.actions.act_window">-->
+		<!--<field name="name">PIM Attribute</field>-->
+		<!--<field name="res_model">pim.attribute</field>-->
+		<!--<field name="view_type">form</field>-->
+		<!--<field name="view_mode">tree,form</field>-->
+		<!--</record>-->
+
+		<!--<record model="ir.ui.view" id="pim_category_form">-->
+		<!--<field name="name">pim.category.form</field>-->
+		<!--<field name="model">pim.category</field>-->
+		<!--<field name="type">form</field>-->
+		<!--<field name="arch" type="xml">-->
+		<!--<form string="PIM Category"  version="7.0">-->
+		<!--<sheet>-->
+		<!--<group string="Category">-->
+		<!--<field name="name" string="Name"/>-->
+		<!--<field name="pim_attributes_id" string="Attributes"/>-->
+		<!--</group>-->
+		<!--</sheet>-->
+		<!--</form>-->
+		<!--</field>-->
+		<!--</record>-->
+
+		<!--&lt;!&ndash; Tree PIM Category &ndash;&gt;-->
+		<!--<record model="ir.ui.view" id="pim_category_tree">-->
+		<!--<field name="name">pim.category.tree</field>-->
+		<!--<field name="model">pim.category</field>-->
+		<!--<field name="type">tree</field>-->
+
+		<!--<field name="arch" type="xml">-->
+		<!--<tree string="PIM Category">-->
+		<!--<field name="name" string="Category" />-->
+		<!--<field name="pim_attributes_id" string="Attributes" />-->
+		<!--</tree>-->
+		<!--</field>-->
+		<!--</record>-->
+
+		<!--&lt;!&ndash; From PIM Attribute &ndash;&gt;-->
+		<!--<record model="ir.ui.view" id="pim_attribute_form">-->
+		<!--<field name="name">pim.attribute.form</field>-->
+		<!--<field name="model">pim.attribute</field>-->
+		<!--<field name="type">form</field>-->
+		<!--<field name="arch" type="xml">-->
+		<!--<form string="PIM Attribute"  version="7.0">-->
+		<!--<sheet>-->
+		<!--<group string="Attribute">-->
+		<!--<field name="name" string="Name"/>-->
+		<!--<field name="pim_attribute_type" string="Type"/>-->
+		<!--<field name="pim_attribute_options_id" string="Options" widget="one2many_list"  context="{'show_attribute': False}" attrs="{'invisible' : [('pim_attribute_type', 'in', ('text','number'))] }" >-->
+		<!--<tree string="Variants" editable="bottom">-->
+		<!--<field name="name"/>-->
+		<!--<field name="pim_attribute_id" options="{'no_create_edit': True}" domain="[('pim_attribute_id', '=', pim_attribute_id)]" context="{'default_pim_attribute_id': pim_attribute_id}" invisible="1"/>-->
+		<!--</tree>-->
+		<!--</field>-->
+		<!--</group>-->
+		<!--</sheet>-->
+		<!--</form>-->
+		<!--</field>-->
+		<!--</record>-->
+
+		<!--&lt;!&ndash; Tree PIM Attribute &ndash;&gt;-->
+		<!--<record model="ir.ui.view" id="pim_attribute_tree">-->
+		<!--<field name="name">pim.attribute.tree</field>-->
+		<!--<field name="model">pim.attribute</field>-->
+		<!--<field name="type">tree</field>-->
+
+		<!--<field name="arch" type="xml">-->
+		<!--<tree string="PIM attribute">-->
+		<!--<field name="name" string="Name" />-->
+		<!--<field name="pim_attribute_type" string="Type"/>-->
+		<!--<field name="pim_attribute_options_id" string="Options"/>-->
+		<!--</tree>-->
+		<!--</field>-->
+		<!--</record>-->
+		<!--&lt;!&ndash; From PIM Attribute with value &ndash;&gt;-->
+		<!--<record model="ir.ui.view" id="pim_attributewith_value_form">-->
+		<!--<field name="name">pim.attribute.with.value.form</field>-->
+		<!--<field name="model">pim.attribute.with.value</field>-->
+		<!--<field name="type">form</field>-->
+		<!--<field name="arch" type="xml">-->
+		<!--<form string="PIM Attribute with value"  version="7.0" create="false">-->
+		<!--<sheet>-->
+		<!--<group string="Attribute with value">-->
+		<!--<field name="name" string="Name" readonly="1"/>-->
+		<!--<field name="pim_attribute_type" string="Name" readonly="1"/>-->
+		<!--</group>-->
+		<!--</sheet>-->
+		<!--</form>-->
+		<!--</field>-->
+		<!--</record>-->
+
+
+
+
+		<!-- Define form View -->
+		<!--<record model="ir.ui.view" id="maintenance_stage_extend">-->
+		<!--<field name="name">Maintenance Stage Extend</field>-->
+		<!--<field name="model">maintenance.equipmente</field>-->
+		<!--<field name="arch" type='xml'>-->
+		<!--<form string="maintenance_stage">-->
+		<!--<sheet>-->
+		<!--<group>-->
+		<!--<group>-->
+		<!--<field name="name" />-->
+		<!--&lt;!&ndash;<field name="eim_attribute_type" />&ndash;&gt;-->
+
+		<!--</group>-->
+		<!--</group>-->
+		<!--</sheet>-->
+		<!--</form>-->
+		<!--</field>-->
+		<!--</record>-->
+
+		<!-- Define Action -->
+		<record model="ir.ui.view" id="maintenance_stage_extend">
+			<field name="name">Maintenance Stage Extend</field>
+			<field name="model">eim.attribute</field>
+			<field name="arch" type='xml'>
+				<form string="maintenance_stage">
+					<sheet>
+						<group>
+							<group>
+								<field name="eim_eqiument_id" string="Equipment Name" />
+								<field name="name" />
+								<field name="eim_attribute_type"/>
+								<field name="eim_attribute_options_id" string="Options" widget="one2many_list"
+									   context="{'show_attribute': False}" attrs="{'invisible' : [('eim_attribute_type', 'in', ('text','number'))] }" ></field>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="eim_attribute_tree">
+			<field name="name">eim.attribute.tree</field>
+			<field name="model">eim.attribute</field>
+			<field name="type">tree</field>
+
+			<field name="arch" type="xml">
+				<tree string="EIM attribute">
+					<field name="name" string="Name" />
+					<field name="eim_attribute_type" string="Type"/>
+
+				</tree>
+			</field>
+		</record>
+
+		<!-- Define Action -->
+		<record model="ir.actions.act_window" id="maintenance_stage_action">
+			<field name="name">Maintenance Stage Extend</field>
+			<field name="view_type">form</field>
+			<field name="res_model">eim.attribute</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<!-- Define Menu -->
+		<menuitem name="Configuration" id="maintenance_conf" parent="maintenance.menu_maintenance_title" groups="maintenance.group_equipment_manager,base.group_user" sequence="40"/>
+		<menuitem name="Attributs" id="maintenance_stage_create" parent="maintenance_conf" action="maintenance_stage_action"/>
+
+
+
+
+	</data>
+</odoo>

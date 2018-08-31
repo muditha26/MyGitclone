@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+<!--<menuitem id="my_menu_item" name="Muditha" parent="stock.menu_stock_root" sequence="150"/>-->
+
+     <record id="pim_category_action" model="ir.actions.act_window">
+      <field name="name">PIM Category</field>
+      <field name="res_model">pim.category</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu for PIM Attribute-->
+    <record id="pim_attribute_action" model="ir.actions.act_window">
+      <field name="name">PIM Attribute</field>
+      <field name="res_model">pim.attribute</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem groups="stock.group_stock_user"
+              id="menu_product_information_management" name="EIM"
+              parent="stock.menu_stock_config_settings" sequence="4"/>
+
+    <menuitem
+            action="pim_category_action" id="menu_product_pim_category"
+            parent="menu_product_information_management" sequence="1"/>
+
+    <menuitem
+            action="pim_attribute_action" id="menu_product_pim_attribute"
+            parent="menu_product_information_management" sequence="2"/>
+
+    <menuitem
+            action="pim_category_action" id="menu_product_pim_category_old"
+            parent="menu_product_information_management" name="nisus" sequence="3"/>
+
+
+
+  </data>-
+</odoo>
