@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Maintenance Equipments Muditha Aravinda",
+    'name': "Maintenance Equipments Muditha Aravin",
 
     'summary': """
         EIM Module""",
